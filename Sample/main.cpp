@@ -15,7 +15,7 @@
 #include <d3dx9.h>
 #include <string>
 
-using namespace NSStorehouseLib;
+using namespace NSHud;
 
 #define SAFE_RELEASE(p) { if (p) { (p)->Release(); (p) = NULL; } }
 

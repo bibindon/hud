@@ -2,7 +2,7 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace NSStorehouseLib;
+using namespace NSHud;
 
 static std::vector<std::string> split(const std::string& s, char delim)
 {
@@ -26,7 +26,7 @@ void hud::Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFr
     m_sprFront = sprFront;
 }
 
-void NSStorehouseLib::hud::UpsertStatus(const std::string& name,
+void NSHud::hud::UpsertStatus(const std::string& name,
                                         const int percent,
                                         const int percentSub,
                                         const bool visible)
@@ -55,7 +55,7 @@ void NSStorehouseLib::hud::UpsertStatus(const std::string& name,
     }
 }
 
-void NSStorehouseLib::hud::RemoveStatus(const std::string& name)
+void NSHud::hud::RemoveStatus(const std::string& name)
 {
     auto result = std::remove_if(m_statusList.begin(), m_statusList.end(),
                                  [&](const StatusItem& x)
@@ -97,42 +97,42 @@ void hud::Draw()
     }
 }
 
-void NSStorehouseLib::StatusItem::SetName(const std::string& arg)
+void NSHud::StatusItem::SetName(const std::string& arg)
 {
     m_name = arg;
 }
 
-std::string NSStorehouseLib::StatusItem::GetName() const
+std::string NSHud::StatusItem::GetName() const
 {
     return m_name;
 }
 
-void NSStorehouseLib::StatusItem::SetPercent(const int arg)
+void NSHud::StatusItem::SetPercent(const int arg)
 {
     m_percent = arg;
 }
 
-int NSStorehouseLib::StatusItem::GetPercent() const
+int NSHud::StatusItem::GetPercent() const
 {
     return m_percent;
 }
 
-void NSStorehouseLib::StatusItem::SetPercentSub(const int arg)
+void NSHud::StatusItem::SetPercentSub(const int arg)
 {
     m_percentSub = arg;
 }
 
-int NSStorehouseLib::StatusItem::GetPercentSub() const
+int NSHud::StatusItem::GetPercentSub() const
 {
     return m_percentSub;
 }
 
-void NSStorehouseLib::StatusItem::SetBarVisible(const bool arg)
+void NSHud::StatusItem::SetBarVisible(const bool arg)
 {
     m_visible = arg;
 }
 
-bool NSStorehouseLib::StatusItem::GetBarVisible() const
+bool NSHud::StatusItem::GetBarVisible() const
 {
     return m_visible;
 }
