@@ -28,15 +28,15 @@ public:
     {
     }
 
-    void DrawImage(const int x, const int y, const int transparency) override
+    void DrawImage(const int percent, const int x, const int y, const int transparency) override
     {
         D3DXVECTOR3 pos {(float)x, (float)y, 0.f};
         m_D3DSprite->Begin(D3DXSPRITE_ALPHABLEND);
         RECT rect = {
             0,
             0,
-            static_cast<LONG>(m_width),
-            static_cast<LONG>(m_height) };
+            static_cast<LONG>(m_width*percent/100),
+            static_cast<LONG>(m_height/2) };
         D3DXVECTOR3 center { 0, 0, 0 };
         m_D3DSprite->Draw(
             m_pD3DTexture,
@@ -101,16 +101,16 @@ public:
     {
         HRESULT hr = D3DXCreateFont(
             m_pD3DDevice,
-            24,
+            20,
             0,
-            FW_NORMAL,
+            FW_THIN,
             1,
             false,
             SHIFTJIS_CHARSET,
             OUT_TT_ONLY_PRECIS,
             ANTIALIASED_QUALITY,
             FF_DONTCARE,
-            "ＭＳ 明朝",
+            "游明朝",
             &m_pFont);
     }
 
@@ -133,26 +133,6 @@ private:
 };
 
 
-class SoundEffect : public ISoundEffect
-{
-    virtual void PlayMove() override
-    {
-        PlaySound("cursor_move.wav", NULL, SND_FILENAME | SND_ASYNC);
-    }
-    virtual void PlayClick() override
-    {
-        PlaySound("cursor_confirm.wav", NULL, SND_FILENAME | SND_ASYNC);
-    }
-    virtual void PlayBack() override
-    {
-        PlaySound("cursor_cancel.wav", NULL, SND_FILENAME | SND_ASYNC);
-    }
-    virtual void Init() override
-    {
-
-    }
-};
-
 LPDIRECT3D9 g_pD3D = NULL;
 LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 LPD3DXFONT g_pFont = NULL;
@@ -165,7 +145,7 @@ D3DXMATERIAL* d3dxMaterials = NULL;
 float f = 0.0f;
 bool bShowMenu = true;
 
-StorehouseLib menu;
+hud menu;
 
 void TextDraw(LPD3DXFONT pFont, char* text, int X, int Y)
 {
@@ -263,52 +243,30 @@ HRESULT InitD3D(HWND hWnd)
         NULL
     );
 
-    Sprite* sprCursor = new Sprite(g_pd3dDevice);
-    sprCursor->Load("cursor.png");
+    Sprite* sprBack = new Sprite(g_pd3dDevice);
+    sprBack->Load("status_back.png");
 
-    Sprite* sprBackground = new Sprite(g_pd3dDevice);
-    sprBackground->Load("background.png");
+    Sprite* sprMiddle = new Sprite(g_pd3dDevice);
+    sprMiddle->Load("status_middle.png");
 
-    Sprite* sprPanelLeft = new Sprite(g_pd3dDevice);
-    sprPanelLeft->Load("panelLeft.png");
-
-    Sprite* sprPanelTop = new Sprite(g_pd3dDevice);
-    sprPanelTop->Load("craftPanel.png");
+    Sprite* sprFront = new Sprite(g_pd3dDevice);
+    sprFront->Load("status_front.png");
 
     IFont* pFont = new Font(g_pd3dDevice);
     pFont->Init();
 
-    ISoundEffect* pSE = new SoundEffect();
-
-    menu.Init(pFont, pSE, sprCursor, sprBackground, sprPanelLeft, sprPanelTop);
-    {
-        std::vector<StoreItem> vs;
-
-        for (int i = 0; i < 20; ++i)
-        {
-            StoreItem storeItem;
-            storeItem.SetId(1);
-            storeItem.SetSubId(1);
-            std::string work;
-            work = "アイテムＡＡＡ" + std::to_string(i);
-            storeItem.SetName(work);
-            vs.push_back(storeItem);
-        }
-        menu.SetInventoryList(vs);
-        vs.clear();
-
-        for (int i = 0; i < 20; ++i)
-        {
-            StoreItem storeItem;
-            storeItem.SetId(1);
-            storeItem.SetSubId(1);
-            std::string work;
-            work = "アイテムＢＢＢ" + std::to_string(i);
-            storeItem.SetName(work);
-            vs.push_back(storeItem);
-        }
-        menu.SetStorehouseList(vs);
-    }
+    menu.Init(pFont, sprBack, sprMiddle, sprFront);
+    
+    menu.UpsertStatus("身体のスタミナ", 100, 100, true);
+    menu.UpsertStatus("脳のスタミナ", 10, 20, true);
+    menu.UpsertStatus("水分", 10, 40, true);
+    menu.UpsertStatus("糖分", 50, 100, true);
+    menu.UpsertStatus("タンパク質", 60, 80, true);
+//    menu.UpsertStatus("脂質", 100, 100, true);
+//    menu.UpsertStatus("ビタミン", 100, 100, true);
+//    menu.UpsertStatus("ミネラル", 100, 100, true);
+    menu.UpsertStatus("頭痛", 100, 100, false);
+    menu.UpsertStatus("腹痛", 100, 100, false);
 
     return S_OK;
 }
@@ -341,12 +299,12 @@ VOID Render()
     pEffect->SetMatrix("matWorldViewProj", &mat);
 
     g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
-        D3DCOLOR_XRGB(100, 100, 100), 1.0f, 0);
+        D3DCOLOR_XRGB(70, 50, 30), 1.0f, 0);
 
     if (SUCCEEDED(g_pd3dDevice->BeginScene()))
     {
         char msg[128];
-        strcpy_s(msg, 128, "Cキーでクラフト画面を表示");
+        strcpy_s(msg, 128, "Cキーでステータスを表示");
         TextDraw(g_pFont, msg, 0, 0);
 
         pEffect->SetTechnique("BasicTec");
@@ -398,81 +356,11 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
             // menu.SetItem(itemInfoList);
         }
-        case VK_UP:
-            menu.Up();
-            break;
-        case VK_DOWN:
-            menu.Down();
-            break;
-        case VK_LEFT:
-            menu.Left();
-            break;
-        case VK_RIGHT:
-            menu.Right();
-            break;
-        case VK_RETURN:
-        {
-            std::string result = menu.Into();
-            if (result == "タイトル")
-            {
-                bShowMenu = false;
-            }
-            else if (result == "最初から")
-            {
-                bShowMenu = false;
-            }
-            break;
-        }
-        case VK_BACK:
-        {
-            std::string result;
-            result = menu.Back();
-            if (result == "EXIT")
-            {
-                bShowMenu = false;
-            }
-            break;
-        }
         case VK_ESCAPE:
             PostQuitMessage(0);
             break;
         }
         break;
-    case WM_MOUSEMOVE:
-    {
-        POINTS mouse_p = MAKEPOINTS(lParam);
-        menu.CursorOn(mouse_p.x, mouse_p.y);
-        break;
-    }
-    case WM_LBUTTONDOWN:
-    {
-        POINTS mouse_p = MAKEPOINTS(lParam);
-        menu.Click(mouse_p.x, mouse_p.y);
-        break;
-    }
-    case WM_RBUTTONDOWN:
-    {
-        std::string result;
-        result = menu.Back();
-        if (result == "EXIT")
-        {
-            bShowMenu = false;
-        }
-        break;
-    }
-    case WM_MOUSEWHEEL:
-    {
-        int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
-        if (zDelta <= 0)
-        {
-            menu.Next();
-        }
-        else
-        {
-            menu.Previous();
-        }
-        break;
-    }
     }
 
     return DefWindowProc(hWnd, msg, wParam, lParam);

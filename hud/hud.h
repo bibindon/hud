@@ -1,3 +1,7 @@
+// 画面にステータス情報を表示する。
+// ロックマンの体力バーのようなもの
+// hudという名前は良くなかった気がするが変えられないのでそのままとする
+
 #pragma once
 #include <string>
 #include <vector>
@@ -11,7 +15,11 @@ namespace NSStorehouseLib
 class ISprite
 {
 public:
-    virtual void DrawImage(const int x, const int y, const int transparency = 255) = 0;
+    virtual void DrawImage(const int percent,
+                           const int x,
+                           const int y,
+                           const int transparency = 255) = 0;
+
     virtual void Load(const std::string& filepath) = 0;
     virtual ~ISprite() {};
 };
@@ -24,118 +32,58 @@ public:
     virtual ~IFont() {};
 };
 
-class ISoundEffect
+class StatusItem
 {
 public:
-    virtual void PlayMove() = 0;
-    virtual void PlayClick() = 0;
-    virtual void PlayBack() = 0;
-    virtual void Init() = 0;
-    virtual ~ISoundEffect() {};
-};
-
-class StoreItem
-{
-public:
-    void SetId(const int arg);
-    int GetId() const;
-
-    void SetSubId(const int arg);
-    int GetSubId() const;
-
     void SetName(const std::string& arg);
     std::string GetName() const;
 
+    // 0 ~ 100の101段階
+    void SetPercent(const int arg);
+    int GetPercent() const;
+
+    void SetPercentSub(const int arg);
+    int GetPercentSub() const;
+
+    void SetBarVisible(const bool arg);
+    bool GetBarVisible() const;
+
 private:
 
-    int m_id;
-    int m_idSub;
     std::string m_name;
+    int m_percent = 0;
+    int m_percentSub = 0;
+    bool m_visible = false;
 };
 
-class StorehouseLib
+class hud
 {
 public:
 
-    void Init(IFont* font,
-              ISoundEffect* SE,
-              ISprite* sprCursor,
-              ISprite* sprBackground,
-              ISprite* sprPanel,
-              ISprite* sprPanelTop);
+    void Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFront);
+    void UpsertStatus(const std::string& name,
+                      const int percent,
+                      const int percentSub,
+                      const bool visible);
 
-    void SetInventoryList(const std::vector<StoreItem>& arg);
-    void SetStorehouseList(const std::vector<StoreItem>& arg);
+    void RemoveStatus(const std::string& name);
 
-    void MoveFromInventoryToStorehouse(const int id, const int subid);
-    void MoveFromStorehouseToInventory(const int id, const int subid);
-
-    std::string Up();
-    std::string Down();
-    std::string Right();
-    std::string Left();
-    std::string Into();
-    std::string Back();
-    std::string Next();
-    std::string Previous();
-    void CursorOn(const int x, const int y);
-    std::string Click(const int x, const int y);
     void Draw();
     
 private:
 
-    enum class eFocus
-    {
-        LEFT,
-        RIGHT,
-    };
-
-    ISprite* m_sprCursor;
-    ISprite* m_sprBackground;
-    ISprite* m_sprPanel;
-    ISprite* m_sprPanelTop;
+    ISprite* m_sprBack;
+    ISprite* m_sprMiddle;
+    ISprite* m_sprFront;
     IFont* m_font;
-    ISoundEffect* m_SE;
-    eFocus m_eFocus = eFocus::LEFT;
 
-    std::vector<StoreItem> m_leftList;
-    std::vector<StoreItem> m_rightList;
+    std::vector<StatusItem> m_statusList;
 
-    const int PANEL_PADDINGX = 50;
-    const int PANEL_PADDINGY = 13;
+    const int STARTX = 1300;
+    const int STARTY = 400;
 
-    const int PANEL_WIDTH = 432;
-    const int PANEL_HEIGHT = 60;
-
-    const int LEFT_PANEL_STARTX = 100;
-    const int LEFT_PANEL_STARTY = 200;
-
-    const int RIGHT_PANEL_STARTX = 700;
-    const int RIGHT_PANEL_STARTY = 200;
-
-    const int PANEL_ROW_MAX = 10;
-
-    // スクロール可能であることを考慮する
-    // 上から画面上で何番目にカーソルがあるか。
-    int m_leftCursor = 0;
-
-    // カーソルが選択している要素がm_outputListの何番目の要素か。
-    int m_leftSelect = 0;
-
-    // 何番目のアイテムが一番上に表示されているか
-    // スクロール可能なので一番上に表示されるアイテムはスクロールすると変わる。
-    int m_leftBegin = 0;
-
-    // スクロール可能であることを考慮する
-    // 上から画面上で何番目にカーソルがあるか。
-    int m_rightCursor = 0;
-
-    // カーソルが選択している要素がm_outputListの何番目の要素か。
-    int m_rightSelect = 0;
-
-    // 何番目のアイテムが一番上に表示されているか
-    // スクロール可能なので一番上に表示されるアイテムはスクロールすると変わる。
-    int m_rightBegin = 0;
+    const int INTERVAL = 50;
+    const int PADDING = 25;
 };
 }
 
