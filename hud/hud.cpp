@@ -26,6 +26,14 @@ void hud::Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFr
     m_sprFront = sprFront;
 }
 
+void NSHud::hud::Finalize()
+{
+    delete m_font;
+    delete m_sprBack;
+    delete m_sprMiddle;
+    delete m_sprFront;
+}
+
 void NSHud::hud::UpsertStatus(const std::string& name,
                                         const int percent,
                                         const int percentSub,

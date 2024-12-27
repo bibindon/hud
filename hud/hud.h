@@ -61,6 +61,8 @@ class hud
 public:
 
     void Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFront);
+    void Finalize();
+
     void UpsertStatus(const std::string& name,
                       const int percent,
                       const int percentSub,
