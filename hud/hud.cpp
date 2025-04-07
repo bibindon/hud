@@ -77,7 +77,7 @@ void NSHud::hud::RemoveStatus(const std::string& name)
 void hud::Draw()
 {
     // どれだけステータス異常があっても表示できるのは8行までとする？
-    for (std::size_t i = 0; i < 8; ++i)
+    for (size_t i = 0; i < 8; ++i)
     {
         if (m_statusList.size() <= i)
         {
@@ -86,21 +86,21 @@ void hud::Draw()
 
         m_font->DrawText_(m_statusList.at(i).GetName(),
                           STARTX + 10,
-                          STARTY + (INTERVAL * i));
+                          STARTY + (INTERVAL * (int)i));
 
         if (m_statusList.at(i).GetBarVisible())
         {
             m_sprBack->DrawImage(100,
                                  STARTX,
-                                 PADDING + STARTY + (INTERVAL * i));
+                                 PADDING + STARTY + (INTERVAL * (int)i));
 
             m_sprMiddle->DrawImage(m_statusList.at(i).GetPercentSub(),
                                    STARTX,
-                                   PADDING + STARTY + (INTERVAL * i));
+                                   PADDING + STARTY + (INTERVAL * (int)i));
 
             m_sprFront->DrawImage(m_statusList.at(i).GetPercent(),
                                   STARTX,
-                                  PADDING + STARTY + (INTERVAL * i));
+                                  PADDING + STARTY + (INTERVAL * (int)i));
         }
     }
 }
