@@ -28,7 +28,7 @@ class IFont
 {
 public:
     virtual void DrawText_(const std::string& msg, const int x, const int y) = 0;
-    virtual void Init() = 0;
+    virtual void Init(const bool bEnglish) = 0;
     virtual ~IFont() {};
 };
 
@@ -60,7 +60,7 @@ class hud
 {
 public:
 
-    void Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFront);
+    void Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFront, const bool bEnglish);
     void Finalize();
 
     void UpsertStatus(const std::string& name,
@@ -86,6 +86,8 @@ private:
 
     const int INTERVAL = 50;
     const int PADDING = 25;
+
+    bool m_bEnglish = false;
 };
 }
 

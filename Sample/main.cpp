@@ -97,21 +97,38 @@ public:
     {
     }
 
-    void Init()
+    void Init(const bool bEnglish)
     {
-        HRESULT hr = D3DXCreateFont(
-            m_pD3DDevice,
-            20,
-            0,
-            FW_THIN,
-            1,
-            false,
-            SHIFTJIS_CHARSET,
-            OUT_TT_ONLY_PRECIS,
-            ANTIALIASED_QUALITY,
-            FF_DONTCARE,
-            "游明朝",
-            &m_pFont);
+        if (!bEnglish)
+        {
+            HRESULT hr = D3DXCreateFont(m_pD3DDevice,
+                                        20,
+                                        0,
+                                        FW_THIN,
+                                        1,
+                                        false,
+                                        SHIFTJIS_CHARSET,
+                                        OUT_TT_ONLY_PRECIS,
+                                        ANTIALIASED_QUALITY,
+                                        FF_DONTCARE,
+                                        "游明朝",
+                                        &m_pFont);
+        }
+        else
+        {
+            HRESULT hr = D3DXCreateFont(m_pD3DDevice,
+                                        20,
+                                        0,
+                                        FW_BOLD,
+                                        1,
+                                        false,
+                                        DEFAULT_CHARSET,
+                                        OUT_TT_ONLY_PRECIS,
+                                        CLEARTYPE_QUALITY,
+                                        FF_DONTCARE,
+                                        "Courier New",
+                                        &m_pFont);
+        }
     }
 
     virtual void DrawText_(const std::string& msg, const int x, const int y)
@@ -253,20 +270,30 @@ HRESULT InitD3D(HWND hWnd)
     sprFront->Load("status_front.png");
 
     IFont* pFont = new Font(g_pd3dDevice);
-    pFont->Init();
 
-    menu.Init(pFont, sprBack, sprMiddle, sprFront);
+    menu.Init(pFont, sprBack, sprMiddle, sprFront, true);
     
-    menu.UpsertStatus("身体のスタミナ", 100, 100, true);
-    menu.UpsertStatus("脳のスタミナ", 10, 20, true);
-    menu.UpsertStatus("水分", 10, 40, true);
-    menu.UpsertStatus("糖分", 50, 100, true);
-    menu.UpsertStatus("タンパク質", 60, 80, true);
+//     menu.UpsertStatus("身体のスタミナ", 100, 100, true);
+//     menu.UpsertStatus("脳のスタミナ", 10, 20, true);
+//     menu.UpsertStatus("水分", 10, 40, true);
+//     menu.UpsertStatus("糖分", 50, 100, true);
+//     menu.UpsertStatus("タンパク質", 60, 80, true);
+// //    menu.UpsertStatus("脂質", 100, 100, true);
+// //    menu.UpsertStatus("ビタミン", 100, 100, true);
+// //    menu.UpsertStatus("ミネラル", 100, 100, true);
+//     menu.UpsertStatus("頭痛", 100, 100, false);
+//     menu.UpsertStatus("腹痛", 100, 100, false);
+
+    menu.UpsertStatus("Body stamina", 100, 100, true);
+    menu.UpsertStatus("Brain stamina", 10, 20, true);
+    menu.UpsertStatus("Hydrogen", 10, 40, true);
+    menu.UpsertStatus("Carbo", 50, 100, true);
+    menu.UpsertStatus("Protein", 60, 80, true);
 //    menu.UpsertStatus("脂質", 100, 100, true);
 //    menu.UpsertStatus("ビタミン", 100, 100, true);
 //    menu.UpsertStatus("ミネラル", 100, 100, true);
-    menu.UpsertStatus("頭痛", 100, 100, false);
-    menu.UpsertStatus("腹痛", 100, 100, false);
+    menu.UpsertStatus("Headache", 100, 100, false);
+    menu.UpsertStatus("Stomacache", 100, 100, false);
 
     return S_OK;
 }

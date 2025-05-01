@@ -18,12 +18,15 @@ static std::vector<std::string> split(const std::string& s, char delim)
     return result;
 }
 
-void hud::Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFront)
+void hud::Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFront, const bool bEnglish)
 {
     m_font = font;
     m_sprBack = sprBack;
     m_sprMiddle = sprMiddle;
     m_sprFront = sprFront;
+    m_bEnglish = bEnglish;
+
+    m_font->Init(m_bEnglish);
 }
 
 void NSHud::hud::Finalize()
