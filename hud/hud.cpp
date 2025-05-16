@@ -1,4 +1,4 @@
-#include "hud.h"
+ï»¿#include "hud.h"
 #include <sstream>
 #include <algorithm>
 
@@ -79,7 +79,7 @@ void NSHud::hud::RemoveStatus(const std::string& name)
 
 void hud::Draw()
 {
-    // ‚Ç‚ê‚¾‚¯ƒXƒe[ƒ^ƒXˆÙí‚ª‚ ‚Á‚Ä‚à•\¦‚Å‚«‚é‚Ì‚Í8s‚Ü‚Å‚Æ‚·‚éH
+    // ã©ã‚Œã ã‘ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãŒã‚ã£ã¦ã‚‚è¡¨ç¤ºã§ãã‚‹ã®ã¯8è¡Œã¾ã§ã¨ã™ã‚‹ï¼Ÿ
     for (size_t i = 0; i < 8; ++i)
     {
         if (m_statusList.size() <= i)

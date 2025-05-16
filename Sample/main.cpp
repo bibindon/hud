@@ -1,4 +1,4 @@
-#pragma comment( lib, "d3d9.lib" )
+ï»¿#pragma comment( lib, "d3d9.lib" )
 #if defined(DEBUG) || defined(_DEBUG)
 #pragma comment( lib, "d3dx9d.lib" )
 #else
@@ -111,7 +111,7 @@ public:
                                         OUT_TT_ONLY_PRECIS,
                                         ANTIALIASED_QUALITY,
                                         FF_DONTCARE,
-                                        "Ÿà–¾’©",
+                                        "æ¸¸æ˜Žæœ",
                                         &m_pFont);
         }
         else
@@ -211,7 +211,7 @@ HRESULT InitD3D(HWND hWnd)
         OUT_TT_ONLY_PRECIS,
         ANTIALIASED_QUALITY,
         FF_DONTCARE,
-        "‚l‚r ƒSƒVƒbƒN",
+        "ï¼­ï¼³ ã‚´ã‚·ãƒƒã‚¯",
         &g_pFont);
     if FAILED(hr)
     {
@@ -224,7 +224,7 @@ HRESULT InitD3D(HWND hWnd)
         g_pd3dDevice, NULL, &pD3DXMtrlBuffer, NULL,
         &dwNumMaterials, &pMesh)))
     {
-        MessageBox(NULL, "Xƒtƒ@ƒCƒ‹‚Ì“Ç‚Ýž‚Ý‚ÉŽ¸”s‚µ‚Ü‚µ‚½", NULL, MB_OK);
+        MessageBox(NULL, "Xãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ", NULL, MB_OK);
         return E_FAIL;
     }
     d3dxMaterials = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
@@ -243,7 +243,7 @@ HRESULT InitD3D(HWND hWnd)
                 d3dxMaterials[i].pTextureFilename,
                 &pTextures[i])))
             {
-                MessageBox(NULL, "ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚Ýž‚Ý‚ÉŽ¸”s‚µ‚Ü‚µ‚½", NULL, MB_OK);
+                MessageBox(NULL, "ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ", NULL, MB_OK);
             }
         }
     }
@@ -273,25 +273,25 @@ HRESULT InitD3D(HWND hWnd)
 
     menu.Init(pFont, sprBack, sprMiddle, sprFront, true);
     
-//     menu.UpsertStatus("g‘Ì‚ÌƒXƒ^ƒ~ƒi", 100, 100, true);
-//     menu.UpsertStatus("”]‚ÌƒXƒ^ƒ~ƒi", 10, 20, true);
-//     menu.UpsertStatus("…•ª", 10, 40, true);
-//     menu.UpsertStatus("“œ•ª", 50, 100, true);
-//     menu.UpsertStatus("ƒ^ƒ“ƒpƒNŽ¿", 60, 80, true);
-// //    menu.UpsertStatus("Ž‰Ž¿", 100, 100, true);
-// //    menu.UpsertStatus("ƒrƒ^ƒ~ƒ“", 100, 100, true);
-// //    menu.UpsertStatus("ƒ~ƒlƒ‰ƒ‹", 100, 100, true);
-//     menu.UpsertStatus("“ª’É", 100, 100, false);
-//     menu.UpsertStatus("• ’É", 100, 100, false);
+//     menu.UpsertStatus("èº«ä½“ã®ã‚¹ã‚¿ãƒŸãƒŠ", 100, 100, true);
+//     menu.UpsertStatus("è„³ã®ã‚¹ã‚¿ãƒŸãƒŠ", 10, 20, true);
+//     menu.UpsertStatus("æ°´åˆ†", 10, 40, true);
+//     menu.UpsertStatus("ç³–åˆ†", 50, 100, true);
+//     menu.UpsertStatus("ã‚¿ãƒ³ãƒ‘ã‚¯è³ª", 60, 80, true);
+// //    menu.UpsertStatus("è„‚è³ª", 100, 100, true);
+// //    menu.UpsertStatus("ãƒ“ã‚¿ãƒŸãƒ³", 100, 100, true);
+// //    menu.UpsertStatus("ãƒŸãƒãƒ©ãƒ«", 100, 100, true);
+//     menu.UpsertStatus("é ­ç—›", 100, 100, false);
+//     menu.UpsertStatus("è…¹ç—›", 100, 100, false);
 
     menu.UpsertStatus("Body stamina", 100, 100, true);
     menu.UpsertStatus("Brain stamina", 10, 20, true);
     menu.UpsertStatus("Hydrogen", 10, 40, true);
     menu.UpsertStatus("Carbo", 50, 100, true);
     menu.UpsertStatus("Protein", 60, 80, true);
-//    menu.UpsertStatus("Ž‰Ž¿", 100, 100, true);
-//    menu.UpsertStatus("ƒrƒ^ƒ~ƒ“", 100, 100, true);
-//    menu.UpsertStatus("ƒ~ƒlƒ‰ƒ‹", 100, 100, true);
+//    menu.UpsertStatus("è„‚è³ª", 100, 100, true);
+//    menu.UpsertStatus("ãƒ“ã‚¿ãƒŸãƒ³", 100, 100, true);
+//    menu.UpsertStatus("ãƒŸãƒãƒ©ãƒ«", 100, 100, true);
     menu.UpsertStatus("Headache", 100, 100, false);
     menu.UpsertStatus("Stomacache", 100, 100, false);
 
@@ -331,7 +331,7 @@ VOID Render()
     if (SUCCEEDED(g_pd3dDevice->BeginScene()))
     {
         char msg[128];
-        strcpy_s(msg, 128, "CƒL[‚ÅƒXƒe[ƒ^ƒX‚ð•\Ž¦");
+        strcpy_s(msg, 128, "Cã‚­ãƒ¼ã§ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’è¡¨ç¤º");
         TextDraw(g_pFont, msg, 0, 0);
 
         pEffect->SetTechnique("BasicTec");
@@ -378,7 +378,7 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 bShowMenu = true;
             }
             break;
-        // ƒƒjƒ…[‚ð•\Ž¦‚µ‚Ä‚¢‚éÅ’†‚Éƒƒjƒ…[‚É•\Ž¦‚³‚ê‚Ä‚¢‚é“à—e‚ð•Ï‚¦‚é
+        // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’è¡¨ç¤ºã—ã¦ã„ã‚‹æœ€ä¸­ã«ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«è¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹å†…å®¹ã‚’å¤‰ãˆã‚‹
         case VK_F2:
         {
             // menu.SetItem(itemInfoList);
