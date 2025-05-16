@@ -20,14 +20,14 @@ public:
                            const int y,
                            const int transparency = 255) = 0;
 
-    virtual void Load(const std::string& filepath) = 0;
+    virtual void Load(const std::wstring& filepath) = 0;
     virtual ~ISprite() {};
 };
 
 class IFont
 {
 public:
-    virtual void DrawText_(const std::string& msg, const int x, const int y) = 0;
+    virtual void DrawText_(const std::wstring& msg, const int x, const int y) = 0;
     virtual void Init(const bool bEnglish) = 0;
     virtual ~IFont() {};
 };
@@ -35,8 +35,8 @@ public:
 class StatusItem
 {
 public:
-    void SetName(const std::string& arg);
-    std::string GetName() const;
+    void SetName(const std::wstring& arg);
+    std::wstring GetName() const;
 
     // 0 ~ 100の101段階
     void SetPercent(const int arg);
@@ -50,7 +50,7 @@ public:
 
 private:
 
-    std::string m_name;
+    std::wstring m_name;
     int m_percent = 0;
     int m_percentSub = 0;
     bool m_visible = false;
@@ -63,12 +63,12 @@ public:
     void Init(IFont* font, ISprite* sprBack, ISprite* sprMiddle, ISprite* sprFront, const bool bEnglish);
     void Finalize();
 
-    void UpsertStatus(const std::string& name,
+    void UpsertStatus(const std::wstring& name,
                       const int percent,
                       const int percentSub,
                       const bool visible);
 
-    void RemoveStatus(const std::string& name);
+    void RemoveStatus(const std::wstring& name);
 
     void Draw();
     

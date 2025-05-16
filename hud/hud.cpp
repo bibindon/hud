@@ -4,11 +4,11 @@
 
 using namespace NSHud;
 
-static std::vector<std::string> split(const std::string& s, char delim)
+static std::vector<std::wstring> split(const std::wstring& s, wchar_t delim)
 {
-    std::vector<std::string> result;
-    std::stringstream ss(s);
-    std::string item;
+    std::vector<std::wstring> result;
+    std::wstringstream ss(s);
+    std::wstring item;
 
     while (getline(ss, item, delim))
     {
@@ -37,7 +37,7 @@ void NSHud::hud::Finalize()
     delete m_sprFront;
 }
 
-void NSHud::hud::UpsertStatus(const std::string& name,
+void NSHud::hud::UpsertStatus(const std::wstring& name,
                                         const int percent,
                                         const int percentSub,
                                         const bool visible)
@@ -66,7 +66,7 @@ void NSHud::hud::UpsertStatus(const std::string& name,
     }
 }
 
-void NSHud::hud::RemoveStatus(const std::string& name)
+void NSHud::hud::RemoveStatus(const std::wstring& name)
 {
     auto result = std::remove_if(m_statusList.begin(), m_statusList.end(),
                                  [&](const StatusItem& x)
@@ -108,12 +108,12 @@ void hud::Draw()
     }
 }
 
-void NSHud::StatusItem::SetName(const std::string& arg)
+void NSHud::StatusItem::SetName(const std::wstring& arg)
 {
     m_name = arg;
 }
 
-std::string NSHud::StatusItem::GetName() const
+std::wstring NSHud::StatusItem::GetName() const
 {
     return m_name;
 }

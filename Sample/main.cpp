@@ -14,6 +14,7 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <string>
+#include <tchar.h>
 
 using namespace NSHud;
 
@@ -48,7 +49,7 @@ public:
 
     }
 
-    void Load(const std::string& filepath) override
+    void Load(const std::wstring& filepath) override
     {
         LPD3DXSPRITE tempSprite { nullptr };
         if (FAILED(D3DXCreateSprite(m_pD3DDevice, &m_D3DSprite)))
@@ -111,7 +112,7 @@ public:
                                         OUT_TT_ONLY_PRECIS,
                                         ANTIALIASED_QUALITY,
                                         FF_DONTCARE,
-                                        "游明朝",
+                                        _T("游明朝"),
                                         &m_pFont);
         }
         else
@@ -126,12 +127,12 @@ public:
                                         OUT_TT_ONLY_PRECIS,
                                         CLEARTYPE_QUALITY,
                                         FF_DONTCARE,
-                                        "Courier New",
+                                        _T("Courier New"),
                                         &m_pFont);
         }
     }
 
-    virtual void DrawText_(const std::string& msg, const int x, const int y)
+    virtual void DrawText_(const std::wstring& msg, const int x, const int y)
     {
         RECT rect = { x, y, 0, 0 };
         m_pFont->DrawText(NULL, msg.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP,
@@ -164,7 +165,7 @@ bool bShowMenu = true;
 
 hud menu;
 
-void TextDraw(LPD3DXFONT pFont, char* text, int X, int Y)
+void TextDraw(LPD3DXFONT pFont, wchar_t* text, int X, int Y)
 {
     RECT rect = { X,Y,0,0 };
     pFont->DrawText(NULL, text, -1, &rect, DT_LEFT | DT_NOCLIP, D3DCOLOR_ARGB(255, 0, 0, 0));
@@ -211,7 +212,7 @@ HRESULT InitD3D(HWND hWnd)
         OUT_TT_ONLY_PRECIS,
         ANTIALIASED_QUALITY,
         FF_DONTCARE,
-        "ＭＳ ゴシック",
+        _T("ＭＳ ゴシック"),
         &g_pFont);
     if FAILED(hr)
     {
@@ -220,11 +221,11 @@ HRESULT InitD3D(HWND hWnd)
 
     LPD3DXBUFFER pD3DXMtrlBuffer = NULL;
 
-    if (FAILED(D3DXLoadMeshFromX("cube.x", D3DXMESH_SYSTEMMEM,
+    if (FAILED(D3DXLoadMeshFromX(_T("cube.x"), D3DXMESH_SYSTEMMEM,
         g_pd3dDevice, NULL, &pD3DXMtrlBuffer, NULL,
         &dwNumMaterials, &pMesh)))
     {
-        MessageBox(NULL, "Xファイルの読み込みに失敗しました", NULL, MB_OK);
+        MessageBox(NULL, _T("Xファイルの読み込みに失敗しました"), NULL, MB_OK);
         return E_FAIL;
     }
     d3dxMaterials = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
@@ -233,17 +234,20 @@ HRESULT InitD3D(HWND hWnd)
 
     for (DWORD i = 0; i < dwNumMaterials; i++)
     {
+        int len = MultiByteToWideChar(CP_ACP, 0, d3dxMaterials[i].pTextureFilename, -1, NULL, 0);
+        std::wstring texFilename(len, 0);
+        MultiByteToWideChar(CP_ACP, 0, d3dxMaterials[i].pTextureFilename, -1, &texFilename[0], len);
+
         pMaterials[i] = d3dxMaterials[i].MatD3D;
         pMaterials[i].Ambient = pMaterials[i].Diffuse;
         pTextures[i] = NULL;
-        if (d3dxMaterials[i].pTextureFilename != NULL &&
-            lstrlen(d3dxMaterials[i].pTextureFilename) > 0)
+        if (!texFilename.empty())
         {
             if (FAILED(D3DXCreateTextureFromFile(g_pd3dDevice,
-                d3dxMaterials[i].pTextureFilename,
-                &pTextures[i])))
+                                                 texFilename.c_str(),
+                                                 &pTextures[i])))
             {
-                MessageBox(NULL, "テクスチャの読み込みに失敗しました", NULL, MB_OK);
+                MessageBox(NULL, _T("テクスチャの読み込みに失敗しました"), NULL, MB_OK);
             }
         }
     }
@@ -251,7 +255,7 @@ HRESULT InitD3D(HWND hWnd)
 
     D3DXCreateEffectFromFile(
         g_pd3dDevice,
-        "simple.fx",
+        _T("simple.fx"),
         NULL,
         NULL,
         D3DXSHADER_DEBUG,
@@ -261,39 +265,39 @@ HRESULT InitD3D(HWND hWnd)
     );
 
     Sprite* sprBack = new Sprite(g_pd3dDevice);
-    sprBack->Load("status_back.png");
+    sprBack->Load(_T("status_back.png"));
 
     Sprite* sprMiddle = new Sprite(g_pd3dDevice);
-    sprMiddle->Load("status_middle.png");
+    sprMiddle->Load(_T("status_middle.png"));
 
     Sprite* sprFront = new Sprite(g_pd3dDevice);
-    sprFront->Load("status_front.png");
+    sprFront->Load(_T("status_front.png"));
 
     IFont* pFont = new Font(g_pd3dDevice);
 
     menu.Init(pFont, sprBack, sprMiddle, sprFront, true);
     
-//     menu.UpsertStatus("身体のスタミナ", 100, 100, true);
-//     menu.UpsertStatus("脳のスタミナ", 10, 20, true);
-//     menu.UpsertStatus("水分", 10, 40, true);
-//     menu.UpsertStatus("糖分", 50, 100, true);
-//     menu.UpsertStatus("タンパク質", 60, 80, true);
-// //    menu.UpsertStatus("脂質", 100, 100, true);
-// //    menu.UpsertStatus("ビタミン", 100, 100, true);
-// //    menu.UpsertStatus("ミネラル", 100, 100, true);
-//     menu.UpsertStatus("頭痛", 100, 100, false);
-//     menu.UpsertStatus("腹痛", 100, 100, false);
+//     menu.UpsertStatus(_T("身体のスタミナ"), 100, 100, true);
+//     menu.UpsertStatus(_T("脳のスタミナ"), 10, 20, true);
+//     menu.UpsertStatus(_T("水分"), 10, 40, true);
+//     menu.UpsertStatus(_T("糖分"), 50, 100, true);
+//     menu.UpsertStatus(_T("タンパク質"), 60, 80, true);
+// //    menu.UpsertStatus(_T("脂質"), 100, 100, true);
+// //    menu.UpsertStatus(_T("ビタミン"), 100, 100, true);
+// //    menu.UpsertStatus(_T("ミネラル"), 100, 100, true);
+//     menu.UpsertStatus(_T("頭痛"), 100, 100, false);
+//     menu.UpsertStatus(_T("腹痛"), 100, 100, false);
 
-    menu.UpsertStatus("Body stamina", 100, 100, true);
-    menu.UpsertStatus("Brain stamina", 10, 20, true);
-    menu.UpsertStatus("Hydrogen", 10, 40, true);
-    menu.UpsertStatus("Carbo", 50, 100, true);
-    menu.UpsertStatus("Protein", 60, 80, true);
-//    menu.UpsertStatus("脂質", 100, 100, true);
-//    menu.UpsertStatus("ビタミン", 100, 100, true);
-//    menu.UpsertStatus("ミネラル", 100, 100, true);
-    menu.UpsertStatus("Headache", 100, 100, false);
-    menu.UpsertStatus("Stomacache", 100, 100, false);
+    menu.UpsertStatus(_T("Body stamina"), 100, 100, true);
+    menu.UpsertStatus(_T("Brain stamina"), 10, 20, true);
+    menu.UpsertStatus(_T("Hydrogen"), 10, 40, true);
+    menu.UpsertStatus(_T("Carbo"), 50, 100, true);
+    menu.UpsertStatus(_T("Protein"), 60, 80, true);
+//    menu.UpsertStatus(_T("脂質"), 100, 100, true);
+//    menu.UpsertStatus(_T("ビタミン"), 100, 100, true);
+//    menu.UpsertStatus(_T("ミネラル"), 100, 100, true);
+    menu.UpsertStatus(_T("Headache"), 100, 100, false);
+    menu.UpsertStatus(_T("Stomacache"), 100, 100, false);
 
     return S_OK;
 }
@@ -330,8 +334,8 @@ VOID Render()
 
     if (SUCCEEDED(g_pd3dDevice->BeginScene()))
     {
-        char msg[128];
-        strcpy_s(msg, 128, "Cキーでステータスを表示");
+        wchar_t msg[128];
+        wcscpy_s(msg, 128, _T("Cキーでステータスを表示"));
         TextDraw(g_pFont, msg, 0, 0);
 
         pEffect->SetTechnique("BasicTec");
@@ -397,7 +401,7 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ 
 {
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, MsgProc, 0L, 0L,
                       GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
-                      "Window1", NULL };
+                      _T("Window1"), NULL };
     RegisterClassEx(&wc);
 
     RECT rect;
@@ -408,9 +412,17 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ 
     rect.top = 0;
     rect.left = 0;
 
-    HWND hWnd = CreateWindow("Window1", "Hello DirectX9 World !!",
-        WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rect.right, rect.bottom,
-        NULL, NULL, wc.hInstance, NULL);
+    HWND hWnd = CreateWindow(_T("Window1"),
+                             _T("Hello DirectX9 World !!"),
+                             WS_OVERLAPPEDWINDOW,
+                             CW_USEDEFAULT,
+                             CW_USEDEFAULT,
+                             rect.right,
+                             rect.bottom,
+                             NULL,
+                             NULL,
+                             wc.hInstance,
+                             NULL);
 
     if (SUCCEEDED(InitD3D(hWnd)))
     {
@@ -425,6 +437,6 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ 
         }
     }
 
-    UnregisterClass("Window1", wc.hInstance);
+    UnregisterClass(_T("Window1"), wc.hInstance);
     return 0;
 }
